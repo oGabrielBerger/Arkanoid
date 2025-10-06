@@ -268,10 +268,10 @@ ChecaColisao:               CMP     R2, 2
                             CALL    InverteVertical
                             JMP     ChecaColisaoFim
 
+ChecaColisaoFim:            JMP     FazMovimento
+
 FazReinicio:                CALL    ReiniciaBola
                             JMP     MovimentoBolaFim
-
-ChecaColisaoFim:            JMP     FazMovimento
 
 
 ColideVert:                 CALL    InverteVertical
