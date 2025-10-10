@@ -564,7 +564,7 @@ ChecaColisaoBlocos:         PUSH    R1
                             ; rebate verticalmente
                             CALL    InverteVertical
 
-                            CALL AtualizaPontuacao
+                            CALL    AtualizaPontuacao
 
                             ; indica colisao
                             MOV     R7, 1
