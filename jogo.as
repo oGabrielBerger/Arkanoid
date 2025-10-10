@@ -46,8 +46,8 @@ Line7                       STR     '                                           
 Line8                       STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO
 Line9                       STR     '                                                                                ', FIM_TEXTO
 Line10                      STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO
-Line11                      STR     '                                                                                ', FIM_TEXTO
-Line12                      STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO
+Line11                      STR     '                                                                                ', FIM_TEXTO 
+Line12                      STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO 
 Line13                      STR     '                                                                                ', FIM_TEXTO
 Line14                      STR     '                                                                                ', FIM_TEXTO
 Line15                      STR     '                                                                                ', FIM_TEXTO
@@ -80,6 +80,10 @@ DirecaoBola                 WORD    DIREITA_CIMA
 Vida                        WORD    3
 VidasStr                    STR     ' ', FIM_TEXTO
 GameOverMsg                 STR     '--- FIM DE JOGO ---', FIM_TEXTO
+
+; usado para checagem e calculo da pontuacao
+Pontuacao                   WORD    0
+PontuacaoStr                STR     '000', FIM_TEXTO
 
 ;------------------------------------------------------------------------------
 ; ZONA III: Tabela de interrupções
@@ -249,7 +253,10 @@ ChecaColisao:               CMP     R2, 2
                             CMP     R3, 79
                             JMP.Z   ColideHor
 
-                            ; Fazer checagem com os blocos!!!
+                            ; Checagem com os blocos
+                            CALL    ChecaColisaoBlocos  ; verificar quantidade de linhas completas e depois somar a coluna do bloco que eu estou / verificar M[R7 + Line0] == ' ' / 'w'
+                            CMP     R7, 1d
+                            JMP.Z   MovimentoBolaFim
 
                             ; Checa colisão com a nave 
                             CMP     R2, 23
@@ -378,20 +385,20 @@ InverteVertical:            PUSH    R1
 
 VertDC:                     MOV     R1, DIREITA_BAIXO
                             MOV     M[DirecaoBola], R1
-                            JMP     VertEnd
+                            JMP     VertFim
 
 VertDB:                     MOV     R1, DIREITA_CIMA
                             MOV     M[DirecaoBola], R1
-                            JMP     VertEnd
+                            JMP     VertFim
 
 VertEC:                     MOV     R1, ESQUERDA_BAIXO
                             MOV     M[DirecaoBola], R1
-                            JMP     VertEnd
+                            JMP     VertFim
 
 VertEB:                     MOV     R1, ESQUERDA_CIMA
                             MOV     M[DirecaoBola], R1
 
-VertEnd:                    POP     R1
+VertFim:                    POP     R1
                             RET
 
 ; inverte a direcao horizontal tendo em vista a anterior 
@@ -411,20 +418,20 @@ InverteHorizontal:          PUSH    R1
 
 HorDC:                      MOV     R1, ESQUERDA_CIMA
                             MOV     M[DirecaoBola], R1
-                            JMP     HorEnd
+                            JMP     HorFim
 
 HorDB:                      MOV     R1, ESQUERDA_BAIXO
                             MOV     M[DirecaoBola], R1
-                            JMP     HorEnd
+                            JMP     HorFim
 
 HorEC:                      MOV     R1, DIREITA_CIMA
                             MOV     M[DirecaoBola], R1
-                            JMP     HorEnd
+                            JMP     HorFim
 
 HorEB:                      MOV     R1, DIREITA_BAIXO
                             MOV     M[DirecaoBola], R1
 
-HorEnd:                     POP     R1
+HorFim:                     POP     R1
                             RET
 
 ;------------------------------------------------------------------------------
@@ -513,10 +520,136 @@ ContinuaReinicio:           MOV     R6, M[LinhaBola]
                             RET
 
 ;------------------------------------------------------------------------------
-; Função Colisão com "w"
+; Função Colisão com 'w'
 ;------------------------------------------------------------------------------
 
+;------------------------------------------------------------------------------
+; ChecaColisaoBlocos (versão genérica)
+; Entrada: R2 = linha da bola, R3 = coluna da bola
+; Saída: R7 = 1 se colidiu com 'w', 0 caso contrário
+;------------------------------------------------------------------------------
 
+ChecaColisaoBlocos:         PUSH    R1
+                            PUSH    R2
+                            PUSH    R3
+                            PUSH    R4
+                            PUSH    R5
+                            PUSH    R6
+
+                            ; calcula endereco do caractere na memoria
+                            ; endereco = Line0 + linha*81 + coluna
+                            MOV     R4, R2 ; soma a linha
+                            SHL     R4, 6  ; soma a linha*2^6 = linha*64
+
+                            MOV     R1, R2 ; soma em outro registrador a linha
+                            SHL     R1, 4  ; soma em outro registrador a linha*2^4 = linha*16
+
+                            ADD     R4, R1 ; soma os dois registradores, ficando linha*80
+                            ADD     R4, R2  ; por fim, soma mais uma vez a linha, para enfim: linha*81
+
+                            ADD     R4, R3 ; soma a coluna
+
+                            MOV     R1, Line0
+                            ADD     R4, R1 ; soma Line0
+
+                            ; le o caractere do mapa
+                            MOV     R5, M[R4]
+                            CMP     R5, 'w'
+                            JMP.NZ  NaoColidiu
+
+                            ; apaga o bloco
+                            MOV     R5, ' '
+                            MOV     M[R4], R5
+
+                            ; atualiza na tela
+                            MOV     R6, R2
+                            MOV     R7, R3
+                            MOV     R5, Space
+                            CALL    PrintF
+
+                            ; rebate verticalmente
+                            CALL    InverteVertical
+
+                            CALL AtualizaPontuacao
+
+                            ; indica colisao
+                            MOV     R7, 1
+                            JMP     FimChecaColisaoBlocos
+
+NaoColidiu:                 MOV     R7, 0
+
+FimChecaColisaoBlocos:      POP     R6
+                            POP     R5
+                            POP     R4
+                            POP     R3
+                            POP     R2
+                            POP     R1
+                            RET
+
+
+;------------------------------------------------------------------------------
+; Função AtualizaPontuacao
+;------------------------------------------------------------------------------
+
+AtualizaPontuacao:          PUSH    R1
+                            PUSH    R2
+                            PUSH    R3
+                            PUSH    R4
+                            PUSH    R5
+
+                            ; Incrementa pontuação
+                            MOV     R1, M[Pontuacao]
+                            INC     R1
+                            MOV     M[Pontuacao], R1
+
+                            ; --- Calcula dígitos individuais ---
+                            ; R1 = valor da pontuação
+
+                            ; Centena = R1 / 100
+                            MOV     R2, 100
+                            DIV     R1, R2      ; R1 = quociente (centena), R2 = resto
+                            MOV     R3, R1      ; R3 = dígito da centena
+
+                            ; Dezena = R2 / 10
+                            MOV     R1, R2      ; R1 = resto anterior
+                            MOV     R2, 10
+                            DIV     R1, R2      ; R1 = quociente (dezena), R2 = resto
+                            MOV     R4, R1      ; R4 = dígito da dezena
+
+                            ; Unidade = R2 (resto final)
+                            MOV     R5, R2      ; R5 = unidade
+
+                            ; --- Atualiza PontuacaoStr ---
+                            ; Converte números para ASCII
+                            ADD     R3, '0'
+                            ADD     R4, '0'
+                            ADD     R5, '0'
+
+                            ; Escreve na string
+                            MOV     R1, PontuacaoStr
+                            MOV     M[R1], R3
+                            INC     R1
+                            MOV     M[R1], R4
+                            INC     R1
+                            MOV     M[R1], R5
+                            INC     R1
+                            MOV R2, FIM_TEXTO
+                            MOV M[R1], R2
+
+
+                            ; Reimprime pontuação na tela
+                            MOV     R6, 1       ; linha 1
+                            MOV     R7, 13      ; coluna onde começa '000' após "pontuacao: "
+                            MOV     R5, PontuacaoStr
+                            CALL    PrintF
+
+
+                            POP     R5
+                            POP     R4
+                            POP     R3
+                            POP     R2
+                            POP     R1
+                            RET
 
 ;------------------------------------------------------------------------------
 ; Função PrintF
@@ -541,14 +674,14 @@ PrintFCycle:                MOV     R1, R6  ; linhas recebidas de R6
 
                             MOV     R3, M[R5] ; conteudo recebido de R5
                             CMP     R3, FIM_TEXTO
-                            JMP.Z   PrintFEnd
+                            JMP.Z   PrintFFim
 
                             MOV     M[IO_WRITE], R3
                             INC     R5
                             INC     R4
                             JMP     PrintFCycle
 
-PrintFEnd:                  POP     R7
+PrintFFim:                  POP     R7
                             POP     R6
                             POP     R5
                             POP     R4
