@@ -629,20 +629,21 @@ AtualizaPontuacao:          PUSH    R1
                             MOV     R1, PontuacaoStr
                             MOV     M[R1], R3
                             INC     R1
+
                             MOV     M[R1], R4
                             INC     R1
+
                             MOV     M[R1], R5
                             INC     R1
+
                             MOV R2, FIM_TEXTO
                             MOV M[R1], R2
-
 
                             ; Reimprime pontuação na tela
                             MOV     R6, 1       ; linha 1
                             MOV     R7, 13      ; coluna onde começa '000' após "pontuacao: "
                             MOV     R5, PontuacaoStr
                             CALL    PrintF
-
 
                             POP     R5
                             POP     R4
