@@ -596,9 +596,6 @@ AtualizaPontuacao:          PUSH    R1
                             INC     R1
                             MOV     M[Pontuacao], R1
 
-                            ; --- Calcula dígitos individuais ---
-                            ; R1 = valor da pontuação
-
                             ; Centena = R1 / 100
                             MOV     R2, 100
                             DIV     R1, R2      ; R1 = quociente (centena), R2 = resto
@@ -613,8 +610,6 @@ AtualizaPontuacao:          PUSH    R1
                             ; Unidade = R2 (resto final)
                             MOV     R5, R2      ; R5 = unidade
 
-                            ; --- Atualiza PontuacaoStr ---
-                            ; Converte números para ASCII
                             ADD     R3, '0'
                             ADD     R4, '0'
                             ADD     R5, '0'
