@@ -273,7 +273,6 @@ ChecaColisaoFim:            JMP     FazMovimento
 FazReinicio:                CALL    ReiniciaBola
                             JMP     MovimentoBolaFim
 
-
 ColideVert:                 CALL    InverteVertical
                             JMP     FazMovimento
 
@@ -281,8 +280,8 @@ ColideHor:                  CALL    InverteHorizontal
                             JMP     FazMovimento
 
 FazMovimento:               MOV     R1, M[DirecaoBola]
-                            CMP     R1, DIREITA_CIMA
 
+                            CMP     R1, DIREITA_CIMA
                             JMP.Z   MovimentoBolaDireitaCima
                             CMP     R1, DIREITA_BAIXO
                             JMP.Z   MovimentoBolaDireitaBaixo
@@ -293,7 +292,7 @@ FazMovimento:               MOV     R1, M[DirecaoBola]
 
 MovimentoBolaDireitaCima:   MOV R6, M[LinhaBola]
                             MOV R7, M[ColunaBola]
-                           MOV R5, Space
+                            MOV R5, Space
                             CALL PrintF
 
                             DEC M[LinhaBola]
@@ -512,6 +511,11 @@ ContinuaReinicio:           MOV     R6, M[LinhaBola]
                             POP     R2
                             POP     R1
                             RET
+
+;------------------------------------------------------------------------------
+; Função Colisão com "w"
+;------------------------------------------------------------------------------
+
 
 
 ;------------------------------------------------------------------------------
