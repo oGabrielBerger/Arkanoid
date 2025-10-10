@@ -260,9 +260,9 @@ ChecaColisao:               CMP     R2, 2
                             ADD     R1, 4
 
                             CMP     R3, R4             ; coluna da bola < início nave?
-                            JMP.N   FazReinicio    ; não colidiu -----------------------------> MUDAR AQUI PARA CORRIGIR VIDA!!!
+                            JMP.N   FazReinicio    ; não colidiu
                             CMP     R3, R1             ; coluna da bola > fim da nave?
-                            JMP.P   FazReinicio    ; não colidiu -----------------------------> MUDAR AQUI PARA CORRIGIR VIDA!!!!
+                            JMP.P   FazReinicio    ; não colidiu
 
                             ; Colidiu com a nave
                             CALL    InverteVertical
