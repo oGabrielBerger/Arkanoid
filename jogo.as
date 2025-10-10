@@ -523,12 +523,6 @@ ContinuaReinicio:           MOV     R6, M[LinhaBola]
 ; Função Colisão com 'w'
 ;------------------------------------------------------------------------------
 
-;------------------------------------------------------------------------------
-; ChecaColisaoBlocos (versão genérica)
-; Entrada: R2 = linha da bola, R3 = coluna da bola
-; Saída: R7 = 1 se colidiu com 'w', 0 caso contrário
-;------------------------------------------------------------------------------
-
 ChecaColisaoBlocos:         PUSH    R1
                             PUSH    R2
                             PUSH    R3
