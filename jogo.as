@@ -635,8 +635,8 @@ AtualizaPontuacao:          PUSH    R1
                             MOV     R5, PontuacaoStr
                             CALL    PrintF
 
-                            MOV     R6, 210d
-                            CMP     R6, M[Pontuacao]  ; max = 210
+                            MOV     R1, 210d
+                            CMP     R1, M[Pontuacao]  ; max = 210
                             JMP.Z Vitoria
 
                             POP     R5
