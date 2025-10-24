@@ -263,9 +263,9 @@ ChecaColisao:               CMP     R2, 2
                             CMP     R2, 22
                             JMP.N   ChecaColisaoFim ; ainda bem acima → nada a fazer
                             CMP     R2, 23
-                            JMP.N   ChecaNave ; está na linha da nave → testa colisão
+                            JMP.Z   ChecaNave ; está na linha da nave → testa colisão
                             CMP     R2, 24
-                            JMP.Z   FazReinicio ; exatamente na linha da nave → testa colisão
+                            JMP.P   FazReinicio ; exatamente na linha da nave → testa colisão
                             ; se R2 > 23 → passou do chão
                             JMP     ChecaColisaoFim
 
@@ -295,6 +295,27 @@ ColideVert:                 CALL    InverteVertical
                             JMP     FazMovimento
 
 ColideHor:                  CALL    InverteHorizontal
+
+                            ; após inverter horizontalmente, verifica se está na linha da nave (descendo)
+                            MOV     R1, M[DirecaoBola]
+                            CMP     R1, DIREITA_BAIXO
+                            JMP.Z   TestaNaveDepoisParede
+                            CMP     R1, ESQUERDA_BAIXO
+                            JMP.Z   TestaNaveDepoisParede
+                            JMP     FazMovimento
+
+TestaNaveDepoisParede:      MOV     R4, M[ShipCol]
+                            MOV     R1, R4
+                            ADD     R1, 4
+                            CMP     R2, 23
+                            JMP.NZ  FazMovimento ; não está na linha da nave
+
+                            CMP     R3, R4
+                            JMP.N   FazMovimento
+                            CMP     R3, R1
+                            JMP.P   FazMovimento
+
+                            CALL    InverteVertical ; rebate na nave após parede
                             JMP     FazMovimento
 
 FazMovimento:               MOV     R1, M[DirecaoBola]
