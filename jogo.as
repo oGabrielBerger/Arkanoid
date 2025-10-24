@@ -580,6 +580,29 @@ FimChecaColisaoBlocos:      POP     R6
                             POP     R1
                             RET
 
+
+;------------------------------------------------------------------------------
+; Função AtualizaPontuacao
+;------------------------------------------------------------------------------
+
+AtualizaPontuacao:          PUSH    R1
+                            PUSH    R2
+                            PUSH    R3
+                            PUSH    R4
+                            PUSH    R5
+
+                            ; Incrementa pontuação
+                            MOV     R1, M[Pontuacao]
+                            INC     R1
+                            MOV     M[Pontuacao], R1
+
+                            POP     R5
+                            POP     R4
+                            POP     R3
+                            POP     R2
+                            POP     R1
+                            RET
+
 ;------------------------------------------------------------------------------
 ; Função PrintF
 ;------------------------------------------------------------------------------
