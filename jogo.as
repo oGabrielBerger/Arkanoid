@@ -256,7 +256,7 @@ ChecaColisao:               CMP     R2, 2
 
                             ; Checagem com os blocos
                             CALL    ChecaColisaoBlocos  ; verificar quantidade de linhas completas e depois somar a coluna do bloco que eu estou / verificar M[R7 + Line0] == ' ' / 'w'
-                            CMP     R7, 1d
+                            CMP     R1, 1d
                             JMP.Z   MovimentoBolaFim
 
                             ; Checa colisão com a nave 
@@ -524,8 +524,7 @@ ContinuaReinicio:           MOV     R6, M[LinhaBola]
 ; Função Colisão com 'w'
 ;------------------------------------------------------------------------------
 
-ChecaColisaoBlocos:         PUSH    R1
-                            PUSH    R2
+ChecaColisaoBlocos:         PUSH    R2
                             PUSH    R3
                             PUSH    R4
                             PUSH    R5
@@ -568,20 +567,16 @@ ChecaColisaoBlocos:         PUSH    R1
                             CALL    AtualizaPontuacao
 
                             ; indica colisao
-                            MOV     R7, 1
+                            MOV     R1, 1
                             JMP     FimChecaColisaoBlocos
 
-NaoColidiu:                 MOV     R7, 0
+NaoColidiu:                 MOV     R1, 0
 
-FimChecaColisaoBlocos:      MOV     R1, R7
-                            POP     R7
-                            POP     R6
+FimChecaColisaoBlocos:      POP     R6
                             POP     R5
                             POP     R4
                             POP     R3
                             POP     R2
-                            POP     R1
-                            MOV     R7, R1
                             RET
 
 
@@ -641,8 +636,9 @@ AtualizaPontuacao:          PUSH    R1
                             CALL    PrintF
 
                             MOV     R1, 210d
-                            CMP     R1, M[Pontuacao]  ; max = 210
+                            CMP     M[Pontuacao], R1  ; max = 210
                             JMP.Z Vitoria
+
                             POP     R7
                             POP     R6
                             POP     R5
