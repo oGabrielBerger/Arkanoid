@@ -531,6 +531,12 @@ ChecaColisaoBlocos:         PUSH    R1
                             PUSH    R5
                             PUSH    R6
 
+                                ; só verifica colisão se estiver na área de blocos (linhas 4 a 12)
+                                CMP     R2, 4
+                                JMP.N   NaoColidiu
+                                CMP     R2, 12
+                                JMP.P   NaoColidiu
+
                             ; calcula endereco do caractere na memoria
                             ; endereco = Line0 + linha*81 + coluna
                             MOV     R4, R2 ; soma a linha
