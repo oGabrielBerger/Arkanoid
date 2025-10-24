@@ -256,7 +256,7 @@ ChecaColisao:               CMP     R2, 2
 
                             ; Checagem com os blocos
                             CALL    ChecaColisaoBlocos  ; verificar quantidade de linhas completas e depois somar a coluna do bloco que eu estou / verificar M[R7 + Line0] == ' ' / 'w'
-                            CMP     R1, 1d
+                            CMP     R7, 1d
                             JMP.Z   MovimentoBolaFim
 
                             ; Checa colisão com a nave 
@@ -524,7 +524,8 @@ ContinuaReinicio:           MOV     R6, M[LinhaBola]
 ; Função Colisão com 'w'
 ;------------------------------------------------------------------------------
 
-ChecaColisaoBlocos:         PUSH    R2
+ChecaColisaoBlocos:         PUSH    R1
+                            PUSH    R2
                             PUSH    R3
                             PUSH    R4
                             PUSH    R5
@@ -567,16 +568,17 @@ ChecaColisaoBlocos:         PUSH    R2
                             CALL    AtualizaPontuacao
 
                             ; indica colisao
-                            MOV     R1, 1
+                            MOV     R7, 1
                             JMP     FimChecaColisaoBlocos
 
-NaoColidiu:                 MOV     R1, 0
+NaoColidiu:                 MOV     R7, 0
 
 FimChecaColisaoBlocos:      POP     R6
                             POP     R5
                             POP     R4
                             POP     R3
                             POP     R2
+                            POP     R1
                             RET
 
 
