@@ -80,6 +80,7 @@ DirecaoBola                 WORD    DIREITA_CIMA
 Vida                        WORD    3
 VidasStr                    STR     ' ', FIM_TEXTO
 GameOverMsg                 STR     '--- FIM DE JOGO ---', FIM_TEXTO
+GameOverMsgByWinning        STR     '--- VOCE VENCEU! ---', FIM_TEXTO
 
 ; usado para checagem e calculo da pontuacao
 Pontuacao                   WORD    0
