@@ -573,12 +573,15 @@ ChecaColisaoBlocos:         PUSH    R1
 
 NaoColidiu:                 MOV     R7, 0
 
-FimChecaColisaoBlocos:      POP     R6
+FimChecaColisaoBlocos:      MOV     R1, R7
+                            POP     R7
+                            POP     R6
                             POP     R5
                             POP     R4
                             POP     R3
                             POP     R2
                             POP     R1
+                            MOV     R7, R1
                             RET
 
 
@@ -591,6 +594,8 @@ AtualizaPontuacao:          PUSH    R1
                             PUSH    R3
                             PUSH    R4
                             PUSH    R5
+                            PUSH    R6
+                            PUSH    R7
 
                             ; Incrementa pontuação
                             MOV     R1, M[Pontuacao]
@@ -638,7 +643,8 @@ AtualizaPontuacao:          PUSH    R1
                             MOV     R1, 210d
                             CMP     R1, M[Pontuacao]  ; max = 210
                             JMP.Z Vitoria
-
+                            POP     R7
+                            POP     R6
                             POP     R5
                             POP     R4
                             POP     R3
