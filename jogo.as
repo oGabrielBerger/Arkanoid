@@ -564,7 +564,7 @@ ChecaColisaoBlocos:         PUSH    R1
                             ; rebate verticalmente
                             CALL    InverteVertical
 
-                            CALL    AtualizaPontuacao
+                            ; CALL    AtualizaPontuacao
 
                             ; indica colisao
                             MOV     R7, 1
@@ -573,67 +573,6 @@ ChecaColisaoBlocos:         PUSH    R1
 NaoColidiu:                 MOV     R7, 0
 
 FimChecaColisaoBlocos:      POP     R6
-                            POP     R5
-                            POP     R4
-                            POP     R3
-                            POP     R2
-                            POP     R1
-                            RET
-
-
-;------------------------------------------------------------------------------
-; Função AtualizaPontuacao
-;------------------------------------------------------------------------------
-
-AtualizaPontuacao:          PUSH    R1
-                            PUSH    R2
-                            PUSH    R3
-                            PUSH    R4
-                            PUSH    R5
-
-                            ; Incrementa pontuação
-                            MOV     R1, M[Pontuacao]
-                            INC     R1
-                            MOV     M[Pontuacao], R1
-
-                            ; Centena = R1 / 100
-                            MOV     R2, 100
-                            DIV     R1, R2      ; R1 = quociente (centena), R2 = resto
-                            MOV     R3, R1      ; R3 = dígito da centena
-
-                            ; Dezena = R2 / 10
-                            MOV     R1, R2      ; R1 = resto anterior
-                            MOV     R2, 10
-                            DIV     R1, R2      ; R1 = quociente (dezena), R2 = resto
-                            MOV     R4, R1      ; R4 = dígito da dezena
-
-                            ; Unidade = R2 (resto final)
-                            MOV     R5, R2      ; R5 = unidade
-
-                            ADD     R3, '0'
-                            ADD     R4, '0'
-                            ADD     R5, '0'
-
-                            ; Escreve na string
-                            MOV     R1, PontuacaoStr
-                            MOV     M[R1], R3
-                            INC     R1
-
-                            MOV     M[R1], R4
-                            INC     R1
-
-                            MOV     M[R1], R5
-                            INC     R1
-
-                            MOV R2, FIM_TEXTO
-                            MOV M[R1], R2
-
-                            ; Reimprime pontuação na tela
-                            MOV     R6, 1       ; linha 1
-                            MOV     R7, 13      ; coluna onde começa '000' após "pontuacao: "
-                            MOV     R5, PontuacaoStr
-                            CALL    PrintF
-
                             POP     R5
                             POP     R4
                             POP     R3
