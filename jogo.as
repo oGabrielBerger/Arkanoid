@@ -634,12 +634,33 @@ AtualizaPontuacao:          PUSH    R1
                             MOV     R5, PontuacaoStr
                             CALL    PrintF
 
+                            MOV     R6, 210d
+                            CMP     R6, M[Pontuacao]  ; max = 210
+                            JMP.Z Vitoria
+
                             POP     R5
                             POP     R4
                             POP     R3
                             POP     R2
                             POP     R1
                             RET
+;------------------------------------------------------------------------------
+; Função Vitoria
+;------------------------------------------------------------------------------
+
+Vitoria:                    PUSH    R5
+                            PUSH    R6
+                            PUSH    R7
+
+                            MOV     R7, 30
+                            MOV     R6, 14
+                            MOV     R5, GameOverMsgByWinning
+                            CALL    PrintF
+                            JMP     Halt
+
+                            POP     R7
+                            POP     R6
+                            POP     R5
 
 ;------------------------------------------------------------------------------
 ; Função PrintF
