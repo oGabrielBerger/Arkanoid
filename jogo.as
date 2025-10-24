@@ -260,21 +260,31 @@ ChecaColisao:               CMP     R2, 2
                             JMP.Z   MovimentoBolaFim
 
                             ; Checa colisão com a nave 
+                            CMP     R2, 22
+                            JMP.N   ChecaColisaoFim ; ainda bem acima → nada a fazer
                             CMP     R2, 23
-                            JMP.NZ  ChecaColisaoFim
+                            JMP.N   ChecaNave ; está na linha da nave → testa colisão
+                            CMP     R2, 24
+                            JMP.Z   FazReinicio ; exatamente na linha da nave → testa colisão
+                            ; se R2 > 23 → passou do chão
+                            JMP     ChecaColisaoFim
 
-                            MOV     R4, M[ShipCol] 
+ChecaNave:                  MOV     R4, M[ShipCol]
                             MOV     R1, R4
                             ADD     R1, 4
+                            CMP     R3, R4 ; coluna da bola < início nave?
+                            JMP.N   FazReinicio ; não colidiu
+                            CMP     R3, R1 ; coluna da bola > fim da nave?
+                            JMP.P   FazReinicio ; não colidiu
 
-                            CMP     R3, R4             ; coluna da bola < início nave?
-                            JMP.N   FazReinicio    ; não colidiu
-                            CMP     R3, R1             ; coluna da bola > fim da nave?
-                            JMP.P   FazReinicio    ; não colidiu
-
-                            ; Colidiu com a nave
+                            ; Verifica se está encostando na parede lateral
+                            CMP R3, 0
+                            JMP.Z   ChecaColisaoFim   ; evita dupla inversão
+                            CMP R3, 79
+                            JMP.Z   ChecaColisaoFim   ; evita dupla inversão
                             CALL    InverteVertical
                             JMP     ChecaColisaoFim
+                            
 
 ChecaColisaoFim:            JMP     FazMovimento
 
@@ -530,12 +540,6 @@ ChecaColisaoBlocos:         PUSH    R1
                             PUSH    R4
                             PUSH    R5
                             PUSH    R6
-
-                                ; só verifica colisão se estiver na área de blocos (linhas 4 a 12)
-                                CMP     R2, 4
-                                JMP.N   NaoColidiu
-                                CMP     R2, 12
-                                JMP.P   NaoColidiu
 
                             ; calcula endereco do caractere na memoria
                             ; endereco = Line0 + linha*81 + coluna
