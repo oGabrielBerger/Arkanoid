@@ -277,11 +277,12 @@ ChecaNave:                  MOV     R4, M[ShipCol]
                             CMP     R3, R1 ; coluna da bola > fim da nave?
                             JMP.P   FazReinicio ; não colidiu
 
-                            ; Verifica se está encostando na parede lateral
+                            ; Verifica se esta encostando na parede lateral
                             CMP R3, 0
-                            JMP.Z   ChecaColisaoFim   ; evita dupla inversão
+                            JMP.Z   ChecaColisaoFim   ; evita dupla inversao
                             CMP R3, 79
-                            JMP.Z   ChecaColisaoFim   ; evita dupla inversão
+                            JMP.Z   ChecaColisaoFim   ; evita dupla inversao
+                            
                             CALL    InverteVertical
                             JMP     ChecaColisaoFim
                             
