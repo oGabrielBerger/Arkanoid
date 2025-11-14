@@ -38,16 +38,16 @@ Line0                       STR     '===========================================
 Line1                       STR     '| pontuacao: 000                                                      vidas: 3 |', FIM_TEXTO
 Line2                       STR     '================================================================================', FIM_TEXTO
 Line3                       STR     '                                                                                ', FIM_TEXTO
-Line4                       STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO
-Line5                       STR     '                                                                                ', FIM_TEXTO
-Line6                       STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO
-Line7                       STR     '                                                                                ', FIM_TEXTO
-Line8                       STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO
-Line9                       STR     '                                                                                ', FIM_TEXTO
-Line10                      STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO
-Line11                      STR     '                                                                                ', FIM_TEXTO 
-Line12                      STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO 
-Line13                      STR     '                                                                                ', FIM_TEXTO
+Line4                       STR     '                                                                                ', FIM_TEXTO
+Line5                       STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO
+Line6                       STR     '                                                                                ', FIM_TEXTO
+Line7                       STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO
+Line8                       STR     '                                                                                ', FIM_TEXTO
+Line9                       STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO
+Line10                      STR     '                                                                                ', FIM_TEXTO
+Line11                      STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO
+Line12                      STR     '                                                                                ', FIM_TEXTO 
+Line13                      STR     '      www  www  www  www  www  www  www  www  www  www  www  www  www  www      ', FIM_TEXTO 
 Line14                      STR     '                                                                                ', FIM_TEXTO
 Line15                      STR     '                                                                                ', FIM_TEXTO
 Line16                      STR     '                                                                                ', FIM_TEXTO
@@ -192,7 +192,7 @@ Timer:                      CALL    MovimentaBolaInicio
 
 ConfiguraTimer:             PUSH    R1
 
-                            MOV     R1, 3d
+                            MOV     R1, 5d
                             MOV     M[UNIDADE_CONTAGEM], R1
                             MOV     R1, ON
                             MOV     M[TEMPORIZADOR], R1
@@ -254,23 +254,22 @@ ChecaColisao:               CMP     R2, 2
                             JMP.Z   ColideHor
 
                             ; Checagem com os blocos
-                            CALL    ChecaColisaoBlocos  ; verificar quantidade de linhas completas e depois somar a coluna do bloco que eu estou / verificar M[R7 + Line0] == ' ' / 'w'
+                            CALL    ChecaColisaoBlocos  ; verificar quantidade de linhas completas e depois somar a coluna do bloco que eu estou
                             CMP     R7, 1d
-                            JMP.Z   MovimentoBolaFim
+                            JMP.Z   MovimentoBolaFim ; vai direto para o fim da funcao, pois a funcao de colisao com o bloco ja trata a direcao e posicao correta da bola
 
                             ; Checa colisão com a nave 
-                            CMP     R2, 22
-                            JMP.N   ChecaColisaoFim ; ainda bem acima → nada a fazer
                             CMP     R2, 23
-                            JMP.Z   ChecaNave ; está na linha da nave → testa colisão
+                            JMP.Z   ChecaNave ; está na linha da nave -> testa colisão
                             CMP     R2, 24
-                            JMP.P   FazReinicio ; exatamente na linha da nave → testa colisão
-                            ; se R2 > 23 → passou do chão
+                            JMP.P   FazReinicio ; exatamente na linha da nave -> testa colisão
+                            ; se R2 > 23 -> passou do chão
                             JMP     ChecaColisaoFim
 
 ChecaNave:                  MOV     R4, M[ShipCol]
                             MOV     R1, R4
                             ADD     R1, 4
+
                             CMP     R3, R4 ; coluna da bola < início nave?
                             JMP.N   FazReinicio ; não colidiu
                             CMP     R3, R1 ; coluna da bola > fim da nave?
@@ -298,6 +297,7 @@ ColideHor:                  CALL    InverteHorizontal
 
                             ; após inverter horizontalmente, verifica se está na linha da nave (descendo)
                             MOV     R1, M[DirecaoBola]
+
                             CMP     R1, DIREITA_BAIXO
                             JMP.Z   TestaNaveDepoisParede
                             CMP     R1, ESQUERDA_BAIXO
@@ -499,7 +499,7 @@ ReiniciaBola:               PUSH    R1
                             JMP.NZ  ContinuaReinicio
 
                             ; FIM DE JOGO
-                            MOV     R6, 14  ; Linha central da tela
+                            MOV     R6, 15  ; Linha central da tela
                             MOV     R7, 30  ; Coluna centralizada
                             MOV     R5, GameOverMsg
                             CALL    PrintF
@@ -662,7 +662,7 @@ AtualizaPontuacao:          PUSH    R1
                             MOV R2, FIM_TEXTO
                             MOV M[R1], R2
 
-                            ; Reimprime pontuação na tela
+                            ; Re-imprime pontuação na tela
                             MOV     R6, 1       ; linha 1
                             MOV     R7, 13      ; coluna onde começa '000' após "pontuacao: "
                             MOV     R5, PontuacaoStr
@@ -689,7 +689,7 @@ Vitoria:                    PUSH    R5
                             PUSH    R7
 
                             MOV     R7, 30
-                            MOV     R6, 14
+                            MOV     R6, 15
                             MOV     R5, GameOverMsgByWinning
                             CALL    PrintF
                             JMP     Halt
